@@ -27,6 +27,7 @@ module.exports.run = async function({
     } = await axios.get(`https://openaikey.onrender.com/api?prompt=${encodeURIComponent(input)}`);
     const response = data.response;
     api.sendMessage(response, event.threadID, event.messageID);
+
   } catch (error) {
     api.sendMessage('An error occurred while processing your request.', event.threadID, event.messageID);
   }

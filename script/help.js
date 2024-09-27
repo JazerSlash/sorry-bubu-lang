@@ -22,33 +22,51 @@ module.exports.run = async function({
     const commands = enableCommands[0].commands;
     if (!input) {
       const pages = 20;
+      let time = process.uptime();
+      let hours = Math.floor(time / (60 * 60));
+      let minutes = Math.floor((time % (60 * 60)) / 60);
+      let seconds = Math.floor(time % 60);
+      const hoursString = hours === 1 ? "hour" : "hours";
+      const minutesString = minutes === 1 ? "minute" : "minutes";
+      const secondsString = seconds === 1 ? "second" : "seconds";
+
+      const uptimeString = `${hours > 0 ? `${hours}` : ''} : ${minutes > 0 ? `${minutes}` : ''} : ${seconds}`;
       let page = 1;
       let start = (page - 1) * pages;
       let end = start + pages;
-      let helpMessage = `Command List:\n\n`;
+      let helpMessage = `AVAILABLE COMMANDS:\n\n`;
       for (let i = start; i < Math.min(end, commands.length); i++) {
-        helpMessage += `\t${i + 1}. 「 ${prefix}${commands[i]} 」\n`;
+        helpMessage += `${i + 1}. ${commands[i]}\n`;
       }
-      helpMessage += '\nEvent List:\n\n';
+      helpMessage += '\nAVAILABLE EVENTS:\n\n';
       eventCommands.forEach((eventCommand, index) => {
-        helpMessage += `\t${index + 1}. 「 ${prefix}${eventCommand} 」\n`;
+        helpMessage += `${index + 1}. ${eventCommand}\n`;
       });
-      helpMessage += `\nPage ${page}/${Math.ceil(commands.length / pages)}. To view the next page, type '${prefix}help page number'. To view information about a specific command, type '${prefix}help command name'.`;
+      helpMessage += `\nServer runtime: ${uptimeString}\nPage ${page}/${Math.ceil(commands.length - pages)}. To access the next page, use help 2\nTo view information about a specific command, type "${prefix}help command name"`;
       api.sendMessage(helpMessage, event.threadID, event.messageID);
     } else if (!isNaN(input)) {
       const page = parseInt(input);
       const pages = 20;
+      let time = process.uptime();
+      let hours = Math.floor(time / (60 * 60));
+      let minutes = Math.floor((time % (60 * 60)) / 60);
+      let seconds = Math.floor(time % 60);
+      const hoursString = hours === 1 ? "hour" : "hours";
+      const minutesString = minutes === 1 ? "minute" : "minutes";
+      const secondsString = seconds === 1 ? "second" : "seconds";
+
+      const uptimeString = `${hours > 0 ? `${hours}` : ''} : ${minutes > 0 ? `${minutes}` : ''} : ${seconds}`;
       let start = (page - 1) * pages;
       let end = start + pages;
-      let helpMessage = `Command List:\n\n`;
+      let helpMessage = `AVAILABLE COMMANDS:\n\n`;
       for (let i = start; i < Math.min(end, commands.length); i++) {
-        helpMessage += `\t${i + 1}. 「 ${prefix}${commands[i]} 」\n`;
+        helpMessage += `${i + 1}. ${commands[i]}\n`;
       }
-      helpMessage += '\nEvent List:\n\n';
+      helpMessage += '\nAVAILABLE EVENTS:\n\n';
       eventCommands.forEach((eventCommand, index) => {
-        helpMessage += `\t${index + 1}. 「 ${prefix}${eventCommand} 」\n`;
+        helpMessage += `${index + 1}. ${eventCommand}\n`;
       });
-      helpMessage += `\nPage ${page} of ${Math.ceil(commands.length / pages)}`;
+      helpMessage += `\nServer runtime: ${uptimeString}\nPage ${page} of ${Math.ceil(commands.length / pages)}`;
       api.sendMessage(helpMessage, event.threadID, event.messageID);
     } else {
       const command = [...Utils.handleEvent, ...Utils.commands].find(([key]) => key.includes(input?.toLowerCase()))?.[1];
@@ -64,14 +82,14 @@ module.exports.run = async function({
           cooldown,
           hasPrefix
         } = command;
-        const roleMessage = role !== undefined ? (role === 0 ? '➛ Permission: user' : (role === 1 ? '➛ Permission: admin' : (role === 2 ? '➛ Permission: thread Admin' : (role === 3 ? '➛ Permission: super Admin' : '')))) : '';
-        const aliasesMessage = aliases.length ? `➛ Aliases: ${aliases.join(', ')}\n` : '';
-        const descriptionMessage = description ? `Description: ${description}\n` : '';
-        const usageMessage = usage ? `➛ Usage: ${usage}\n` : '';
-        const creditsMessage = credits ? `➛ Credits: ${credits}\n` : '';
-        const versionMessage = version ? `➛ Version: ${version}\n` : '';
-        const cooldownMessage = cooldown ? `➛ Cooldown: ${cooldown} second(s)\n` : '';
-        const message = ` 「 Command 」\n\n➛ Name: ${name}\n${versionMessage}${roleMessage}\n${aliasesMessage}${descriptionMessage}${usageMessage}${creditsMessage}${cooldownMessage}`;
+        const roleMessage = role !== undefined ? (role === 0 ? '❯ permission: user' : (role === 1 ? '❯ permission: admin' : (role === 2 ? '❯ permission: thread Admin' : (role === 3 ? '❯ permission: super Admin' : '')))) : '';
+        const aliasesMessage = aliases.length ? `❯ aliases: ${aliases.join(', ')}\n` : '';
+        const descriptionMessage = description ? `${description}\n` : '';
+        const usageMessage = usage ? `❯ usage: ${usage}\n` : '';
+        const creditsMessage = credits ? `❯ credits: ${credits}\n` : '';
+        const versionMessage = version ? `❯ version: ${version}\n` : '';
+        const cooldownMessage = cooldown ? `❯ cooldown: ${cooldown} second(s)\n` : '';
+        const message = ` 「 ${name} 」\n${descriptionMessage}\n${versionMessage}${roleMessage}\n${aliasesMessage}${usageMessage}${creditsMessage}${cooldownMessage}`;
         api.sendMessage(message, event.threadID, event.messageID);
       } else {
         api.sendMessage('Command not found.', event.threadID, event.messageID);
